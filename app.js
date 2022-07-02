@@ -41,9 +41,16 @@ app.get("/add", (req, res) => {
   res.render("add");
 });
 app.post("/add", async (req, res) => {
-  await console.log(req.body);
+  // await console.log(req.body);
   await Post.create(req.body);
   res.redirect("/");
+});
+
+app.get("/posts/:id", async (req, res) => {
+  const post = await Post.findById(req.params.id);
+  res.render("post", {
+    post,
+  });
 });
 
 const port = 3000;
