@@ -2,56 +2,50 @@ const express = require("express");
 const mongoose = require("mongoose");
 const ejs = require("ejs");
 const path = require("path");
+const methodOverride = require('method-override');
 const fileUpload = require("express-fileupload"); // modülü kullanıma alıyoruz.
 
 const Post = require("./models/Post");
+const postController = require("./controller/postController");
+const pageController = require('./controller/pageController');
 
+//init express
 const app = express();
 
 //veri tabanı bağlanma kodu buraya
-mongoose.connect("mongodb://127.0.0.1:27017/cleanblog-test-db", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect("mongodb://127.0.0.1:27017/cleanblog-test-db");
+// , {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// }
+// );
 
 // TEMPLATE ENGINE
 app.set("view engine", "ejs");
 
 //static dosyaların klasörünü belirtir. MIDDLEWARES
 app.use(express.static("public"));
-//iki önemli middleware:
+//üç önemli middleware:
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(methodOverride('_method'));
 
 //file upload
 app.use(fileUpload());
 
 //statik html sayfası göndermek için, klasörden dosyayı buluyoruz!
 //   res.sendFile(path.resolve(__dirname, "temp/index.html"));
-app.get("/", async (req, res) => {
-  const posts = await Post.find({});
-  res.render("index", {
-    posts,
-  });
-});
-app.get("/about", (req, res) => {
-  res.render("about");
-});
-app.get("/add", (req, res) => {
-  res.render("add");
-});
-app.post("/add", async (req, res) => {
-  // await console.log(req.body);
-  await Post.create(req.body);
-  res.redirect("/");
-});
+app.get("/", postController.getAllPost);
+app.get("/about", pageController.getAboutPage);
+//add pages
+app.get("/add", pageController.getAddPage);
+app.post("/add",postController.addPost);
+app.get('/posts/edit/:id', postController.editPost);
+app.get("/posts/:id", postController.getPost);
+app.put('/posts/:id',postController.updatePost);
+app.delete('/posts/:id', postController.deletePost);
 
-app.get("/posts/:id", async (req, res) => {
-  const post = await Post.findById(req.params.id);
-  res.render("post", {
-    post,
-  });
-});
+app.get("*",pageController.notFoundPage);
 
 const port = 3000;
 
