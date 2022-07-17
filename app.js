@@ -13,7 +13,7 @@ const pageController = require('./controller/pageController');
 const app = express();
 
 //veri tabanı bağlanma kodu buraya
-mongoose.connect("mongodb://127.0.0.1:27017/cleanblog-test-db");
+mongoose.connect("mongodb://127.0.0.1:27017/cleanblog-ugur-test-db");
 // , {
 //   useNewUrlParser: true,
 //   useUnifiedTopology: true,
@@ -40,10 +40,10 @@ app.get("/about", pageController.getAboutPage);
 //add pages
 app.get("/add", pageController.getAddPage);
 app.post("/add",postController.addPost);
-app.get('/posts/edit/:id', postController.editPost);
 app.get("/posts/:id", postController.getPost);
 app.put('/posts/:id',postController.updatePost);
 app.delete('/posts/:id', postController.deletePost);
+app.get('/posts/edit/:id', postController.editPost);
 
 app.get("*",pageController.notFoundPage);
 

@@ -10,9 +10,9 @@ exports.getAllPost = async (req, res) => {
 exports.getPost = async (req, res) => {
   try {
     //fixme: single posta tıklayınca buraya iki kere giriyor.
-    let _id =
-      req.params.id !== "null" ? req.params.id : "62c04ef37571a0dee1cf9758";
-    const post = await Post.findById(_id);
+    // let _id =
+    //   req.params.id !== "null" ? req.params.id : "62c04ef37571a0dee1cf9758";
+    const post = await Post.findById(req.params.id);
     // console.log(post);
     res.render("post", {
       post,
